@@ -1,33 +1,24 @@
-<h1>Welcome</h1>
+{{!-- <h1>Welcome</h1> --}}
 
 
 {{!-- scraped articles --}}
 {{#each articles}}
-{{#unless saved}}
+    <!-- Item {{this}} -->
     <div class="row">
     <div class="col s12 m6">
       <div class="card blue-grey darken-1">
         <div class="card-content white-text">
-          <span id="article-title" class="card-title">{{this.title}}</span>
-          <p id="article-summary">{{this.summary}}</p>
+          <span id="article-title" class="card-title">Stanley love bars</span>
+          <p id="article-summary">{{this}}</p>
         </div>
         <div class="card-action">
-          <a id="article-link" href={{this.link}}>View Article</a>
+          <a id="article-link" href={{this.title}}>View Article</a>
         </div>
       </div>
     </div>
   </div>
-{{/unless}}
 {{/each}}
 
 
 
 
-{{!-- saved articles --}}
-{{#each articles}}
-
-    {{#each notes}}
-
-    {{/each}}
-
-{{/each}}

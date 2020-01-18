@@ -44,8 +44,8 @@ app.use(express.static('public'));
 // Set express to use external routes
 // app.use('/externalRoutes', externalRoutes);
 
-// var MONGO_URI = process.env.mLab_URI || 'mongodb://localhost/scraper_db';
-var MONGO_URI = 'mongodb://localhost/scraper_db';
+var MONGO_URI = process.env.MONGODB_URI || 'mongodb://localhost/scraper_db';
+// var MONGO_URI = 'mongodb://localhost/scraper_db';
 
 mongoose.connect(MONGO_URI, {
     useNewUrlParser: true,
@@ -55,15 +55,16 @@ mongoose.connect(MONGO_URI, {
 
 // testing home route for handlebars
 app.get('/', function(req, res) {
-    db.Article.find({}).then( function(article) {
+    db.Article.find({}).limit(2).then( function(article) {
+        console.log(article);
         res.render('index', { articles: article })
     }).catch(function(err) {
         console.log(err);
     });
 });
 
-app.get('/scrape', (req, res) => {
-    axios.get('https://www.huffpost.com/news/politics').then((response) => {
+app.get('/scrape', function(req, res) {
+    axios.get('https://www.huffpost.com/news/politics').then( function(response)  {
         var $ = cheerio.load(response.data);
         console.log(res);
 
