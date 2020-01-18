@@ -19,11 +19,23 @@ var app = express();
 // var externalRoutes = require('./routes/route666')
 
 // Set views path
-app.set('views', path.join(__dirname, 'views'));
-app.engine('handlebars', exphbs(
-    { defaultLayout: 'main' }
-));
-app.set('view engine', 'handlebars');
+// app.set('views', path.join(__dirname, 'views'));
+// app.engine('handlebars', exphbs(
+//     { defaultLayout: 'main' }
+// ));
+// app.set('view engine', 'handlebars');
+
+app.engine(
+    "handlebars",
+    exphbs({
+      defaultLayout: "main",
+      partialsDir: [
+        //  path to your partials
+        path.join(__dirname, 'views/partials'),
+      ]
+    })
+  );
+app.set("view engine", "handlebars");
 app.use(logger('dev'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json());
@@ -42,8 +54,12 @@ mongoose.connect(MONGO_URI, {
     .catch(err => console.log(err));
 
 // testing home route for handlebars
-app.get('/', (req, res) => {
-    // res.render('home');
+app.get('/', function(req, res) {
+    db.Article.find({}).then( function(article) {
+        res.render('index', { articles: article })
+    }).catch(function(err) {
+        console.log(err);
+    });
 });
 
 app.get('/scrape', (req, res) => {
@@ -54,24 +70,31 @@ app.get('/scrape', (req, res) => {
         // target each element with class of "card__text"
         $('.card__text').each( function(i, element) {
 
-            // empty results object
-            var result = {};
-
+            
             // target text from all .card__headlines elements for title
-            result.title = $(this).children('.card__headlines').text();
+            var title = $(element).children('.card__headlines').text();
             
             // target text from all .card__description elements for summary
-            result.summary = $(this).children('.card__description').text();
-
+            var summary = $(element).children('.card__description').text();
+            
             // target href of .card__headline from child a tag
-            result.link = $(this).children('.card__headlines').children('a').attr('href');
+            var link = $(element).children('.card__headlines').children('a').attr('href');
+            
+            var saved = false;
+            
+            // empty results object
+            var result = {
+                title: title,
+                summary: summary,
+                link: link,
+                saved: saved
+            };
 
-            result.saved = false;
+            
 
             // console.log(result);
 
             // Create new Articles from each result
-
             db.Article.create(result).then((dbArticle) => {
                 console.log(dbArticle);
             }).catch(err => console.log(err));
