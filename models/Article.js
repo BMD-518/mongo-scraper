@@ -17,6 +17,10 @@ var ArticleSchema = new Schema({
         type: String,
         required: true
     },
+    saved: {
+        type: Boolean,
+        required: true
+    },
 
     // Note references note schema, associating notes with articles
     note: {
